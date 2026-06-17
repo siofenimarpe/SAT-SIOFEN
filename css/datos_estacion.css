@@ -1,0 +1,315 @@
+/* ═══════════════════════════════════════════════════════════
+   css/datos_estacion.css
+   Estilos del panel inferior de datos, calendario y boletín
+═══════════════════════════════════════════════════════════ */
+
+/* ── Tercera ventana ── */
+#modalDatos {
+    pointer-events: none;
+}
+
+.modal-datos-content {
+    pointer-events: all;
+    position: fixed;
+    top: 2vh;
+    right: 1.5vw;
+    width: 48vw;
+    max-width: 720px;
+    min-width: 520px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Se posiciona debajo del metadata via JS */
+}
+
+/* ── Cabecera ── */
+.datos-header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #1e5799 100%);
+    color: #fff;
+    padding: 13px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: move;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.datos-header h3 {
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.datos-subtitulo {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+/* ── Tarjetas de variables ── */
+.datos-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 12px 14px 8px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dato-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.dato-card-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #64748b;
+}
+
+.dato-card-desc {
+    font-size: 9px;
+    color: #94a3b8;
+    line-height: 1.3;
+}
+
+.dato-card-valor {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 2px;
+}
+
+.dato-card-unidad {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Colores por variable */
+.dato-tsm  { color: #c0392b; }
+.dato-atsm { color: #2980b9; }
+.dato-ssm  { color: #000000; }
+.dato-assm { color: #94a3b8; }
+
+/* ── Cuerpo: calendario + lista + boletín en fila ── */
+.datos-body {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Calendario izquierda */
+.datos-cal-wrap {
+    width: 54%;
+    padding: 10px 8px 10px 12px;
+    border-right: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.datos-cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.datos-cal-nav-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    width: 24px; height: 24px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    color: #475569;
+    transition: background 0.15s;
+}
+.datos-cal-nav-btn:hover { background: #e2e8f0; }
+
+.datos-cal-titulo {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e3a5f;
+}
+
+.datos-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+}
+
+.datos-cal-dow {
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 2px 0;
+    text-transform: uppercase;
+}
+
+.datos-cal-dia {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #334155;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 0.12s;
+}
+.datos-cal-dia:hover:not(.datos-cal-vacio):not(.datos-cal-fuera) {
+    background: #dbeafe;
+}
+.datos-cal-dia.datos-cal-con-dato {
+    background: #dcfce7;
+    color: #15803d;
+    font-weight: 700;
+    border-color: #86efac;
+}
+.datos-cal-dia.datos-cal-con-dato:hover {
+    background: #bbf7d0;
+}
+.datos-cal-dia.datos-cal-selec {
+    background: #1e5799 !important;
+    color: #fff !important;
+    border-color: #1e5799 !important;
+    box-shadow: 0 2px 5px rgba(30,87,153,0.35);
+}
+.datos-cal-dia.datos-cal-hoy {
+    border-color: #1e5799;
+    font-weight: 800;
+}
+.datos-cal-dia.datos-cal-vacio { cursor: default; }
+.datos-cal-dia.datos-cal-fuera { color: #cbd5e1; cursor: not-allowed; }
+
+/* Lista de valores derecha */
+.datos-lista-wrap {
+    flex: 1;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.datos-lista-titulo {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.datos-lista-fecha {
+    font-size: 11px;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+.datos-lista-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #f8fafc;
+    gap: 4px;
+}
+.datos-lista-item:last-child { border-bottom: none; }
+
+.datos-lista-var {
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    min-width: 38px;
+}
+
+.datos-lista-num {
+    font-size: 13px;
+    font-weight: 800;
+    flex: 1;
+    text-align: right;
+}
+
+.datos-lista-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-verde  { background: #22c55e; }
+.dot-gris   { background: #cbd5e1; }
+
+/* ── Columna de boletines (dos apilados) ── */
+.datos-boletines-col {
+    display: flex;
+    flex-direction: column;
+    width: 140px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    background: #1e3a5c;
+}
+
+.datos-boletin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 8px;
+    flex: 1;
+    text-decoration: none;
+    transition: background 0.2s;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.datos-boletin:last-child { border-bottom: none; }
+.datos-boletin:hover { background: #1a4a80; }
+
+.datos-boletin-img {
+    width: 100%;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.datos-boletin-img-placeholder {
+    width: 100%; height: 75px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.datos-boletin-texto {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+}

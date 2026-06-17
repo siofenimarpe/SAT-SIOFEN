@@ -1,0 +1,80 @@
+/* ═══════════════════════════════════════════════════════════
+   css/metadata.css
+   Estilos de la tabla de metadatos de estación costera
+═══════════════════════════════════════════════════════════ */
+
+.meta-tabla-wrap {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.meta-tabla-titulo {
+    background: #5b9bd5;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    padding: 10px 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.meta-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.meta-tabla tr:nth-child(even) { background: #eaf1f8; }
+.meta-tabla tr:nth-child(odd)  { background: #fff; }
+
+.meta-td-key {
+    padding: 9px 12px;
+    color: #334155;
+    font-weight: 600;
+    width: 42%;
+    vertical-align: top;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 20px;
+}
+
+.meta-td-val {
+    padding: 9px 12px;
+    color: #1e3a5f;
+    vertical-align: top;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.meta-td-val a {
+    font-size: 14px !important; /*Fuerza para que se cambie el numero de letra de las url*/
+}
+
+
+.meta-tabla tr:last-child .meta-td-key,
+.meta-tabla tr:last-child .meta-td-val {
+    border-bottom: none;
+}
+
+/* ── Botón VER MÁS / VER MENOS ── */
+.meta-ver-mas-btn {
+    width: 100%;
+    padding: 9px;
+    background: #f1f5f9;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    font-size: 13px;
+    font-weight: 800;
+    color: #1e5799;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.3px;
+    transition: background 0.15s;
+}
+
+.meta-ver-mas-btn:hover { background: #e2e8f0; }
+

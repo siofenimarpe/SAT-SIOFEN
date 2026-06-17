@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red de Monitoreo Oceanográfico — Perú</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/metadata.css"/>
+    <link rel="stylesheet" href="css/datos_estacion.css"/>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- MODAL GRÁFICOS -->
+<div id="modalGraficos" class="modal">
+    <div class="modal-graficos-content">
+        <div class="modal-header">
+            <h3>🌊 Estación de Monitoreo Oceanográfico</h3>
+            <button class="close-btn" onclick="cerrarModales()">&times;</button>
+        </div>
+        <div class="tabs-container">
+            <button class="tab-btn active" id="tab-TODOS" onclick="cambiarPestana('TODOS')">Todos</button>
+            <button class="tab-btn"         id="tab-TSM"   onclick="cambiarPestana('TSM')">TSM</button>
+            <button class="tab-btn"         id="tab-ATSM"  onclick="cambiarPestana('ATSM')">ATSM</button>
+            <button class="tab-btn"         id="tab-SSM"   onclick="cambiarPestana('SSM')">SSM</button>
+            <!--<button class="tab-btn" disabled id="tab-ASSM">ASSM</button>-->
+            <button class="tab-btn" id="tab-ASSM" onclick="cambiarPestana('ASSM')">ASSM</button>
+        </div>
+        <div style="position:relative; flex:1; overflow:hidden; display:flex; flex-direction:column;">
+            <div id="gifCargando">
+                <div class="spinner"></div>
+                <p>Cargando datos…</p>
+            </div>
+            <div class="graficos-scroll" id="graficosScroll"></div>
+        </div>
+        <div class="export-bar">
+            <div class="export-menu">
+                <button class="control-btn hamburger-btn">&#9776; Exportar</button>
+                <div class="export-dropdown">
+                    <a href="#" onclick="exportar(event,'print')">🖨 Imprimir</a>
+                    <hr>
+                    <a href="#" onclick="exportar(event,'png')">⬇ Descargar PNG</a>
+                    <a href="#" onclick="exportar(event,'jpeg')">⬇ Descargar JPEG</a>
+                    <a href="#" onclick="exportar(event,'pdf')">⬇ Descargar PDF</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL METADATA -->
+<div id="modalMetadata" class="modal">
+    <div class="modal-metadata-content">
+        <div class="modal-header">
+            <h3>📍 Información de Estación</h3>
+            <button class="close-btn" onclick="cerrarModales()">&times;</button>
+        </div>
+        <div class="metadata-body">
+            <div class="meta-tabla-wrap">
+                <div class="meta-tabla-titulo">METADATOS DE LA ESTACIÓN COSTERA</div>
+                <table class="meta-tabla">
+                    <tr>
+                        <td class="meta-td-key">Nombre de la estación</td>
+                        <td class="meta-td-val" id="meta-est-nombre">—</td>
+                    </tr>
+                    <tr>
+                        <td class="meta-td-key">Ubicación</td>
+                        <td class="meta-td-val" id="meta-est-ubicacion">—</td>
+                    </tr>
+                </table>
+                <button class="meta-ver-mas-btn" id="btnVerMas">VER MÁS ▼</button>
+                <div id="metaExtra" style="display:none;">
+                    <table class="meta-tabla">
+                        <tr><td class="meta-td-key">Institución</td>            <td class="meta-td-val" id="meta-est-inst">—</td></tr>
+                        <tr><td class="meta-td-key">Variables registradas</td>  <td class="meta-td-val" id="meta-est-vars">—</td></tr>
+                        <tr><td class="meta-td-key">Variables derivadas</td>    <td class="meta-td-val" id="meta-est-deriv">—</td></tr>
+                        <tr><td class="meta-td-key">Climatología</td>           <td class="meta-td-val" id="meta-est-clima">—</td></tr>
+                        <tr><td class="meta-td-key">Frecuencia de los datos</td><td class="meta-td-val" id="meta-est-freq">—</td></tr>
+                        <tr><td class="meta-td-key">Contacto técnico</td>       <td class="meta-td-val" id="meta-est-cont">—</td></tr>
+                        <tr><td class="meta-td-key">URL de datos</td>           <td class="meta-td-val" id="meta-est-urls">—</td></tr>
+                    </table>
+                </div>
+            </div>
+            <!-- IDs legacy ocultos -->
+            <span id="meta-nombre"         style="display:none;"></span>
+            <span id="meta-lat"            style="display:none;"></span>
+            <span id="meta-lon"            style="display:none;"></span>
+            <span id="meta-tsm-val"        style="display:none;"></span>
+            <span id="meta-atsm-val"       style="display:none;"></span>
+            <span id="meta-ssm-val"        style="display:none;"></span>
+            <span id="meta-tsm-fecha"      style="display:none;"></span>
+            <span id="meta-atsm-fecha"     style="display:none;"></span>
+            <span id="meta-ssm-fecha"      style="display:none;"></span>
+            <span id="meta-titulo-valores" style="display:none;"></span>
+            <span id="btnUltimo"           style="display:none;"></span>
+            <span id="btnFecha"            style="display:none;"></span>
+            <div  id="calendarioWrap"      style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DATOS DE ESTACIÓN (tercera ventana) -->
+<div id="modalDatos" class="modal">
+    <div class="modal-datos-content" id="modalDatosContent">
+
+        <div class="datos-header">
+            <div>
+                <h3>📊 Datos de la Estación</h3>
+                <div class="datos-subtitulo" id="datos-subtitulo">Último dato disponible</div>
+            </div>
+            <button class="close-btn" onclick="cerrarModales()">&times;</button>
+        </div>
+
+        <!-- 4 tarjetas -->
+        <div class="datos-cards">
+            <div class="dato-card">
+                <div class="dato-card-label">TSM</div>
+                <div class="dato-card-desc">Temperatura Superficial del Mar</div>
+                <div style="display:flex; align-items:baseline; gap:4px;">
+                    <div class="dato-card-valor dato-tsm" id="dc-tsm-val">—</div>
+                    <div class="dato-card-unidad">°C</div>
+                </div>
+            </div>
+
+            <div class="dato-card">
+                <div class="dato-card-label">ATSM</div>
+                <div class="dato-card-desc">Anomalía de la TSM</div>
+                <div style="display:flex; align-items:baseline; gap:4px;">
+                    <div class="dato-card-valor dato-atsm" id="dc-atsm-val">—</div>
+                    <div class="dato-card-unidad">°C</div>
+                </div>
+            </div>
+
+            <div class="dato-card">
+                <div class="dato-card-label">SSM</div>
+                <div class="dato-card-desc">Salinidad Superficial del Mar</div>
+                <div style="display:flex; align-items:baseline; gap:4px;">
+                    <div class="dato-card-valor dato-ssm" id="dc-ssm-val">—</div>
+                    <div class="dato-card-unidad">ups</div>
+                </div>
+            </div>
+
+            <div class="dato-card">
+                <div class="dato-card-label">ASSM</div>
+                <div class="dato-card-desc">Anomalía de la SSM</div>
+                <div style="display:flex; align-items:baseline; gap:4px;">
+                    <div class="dato-card-valor dato-assm" id="dc-assm-val">—</div>
+                    <div class="dato-card-unidad">ups</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendario + lista -->
+        <div class="datos-body">
+            <div class="datos-cal-wrap">
+                <div class="datos-cal-nav">
+                    <button class="datos-cal-nav-btn" onclick="dcCalNav(-1)">&#8592;</button>
+                    <span class="datos-cal-titulo" id="dcCalTitulo">—</span>
+                    <button class="datos-cal-nav-btn" onclick="dcCalNav(1)">&#8594;</button>
+                </div>
+                <div class="datos-cal-grid" id="dcCalGrid"></div>
+            </div>
+            <div class="datos-lista-wrap">
+                <div class="datos-lista-titulo">Datos disponibles</div>
+                <div class="datos-lista-fecha" id="dc-lista-fecha">—</div>
+                <div class="datos-lista-item">
+                    <span class="datos-lista-var dato-tsm">TSM</span>
+                    <span class="datos-lista-num dato-tsm" id="dc-lista-tsm">—</span>
+                    <span class="datos-lista-dot" id="dc-dot-tsm"></span>
+                </div>
+                <div class="datos-lista-item">
+                    <span class="datos-lista-var dato-atsm">ATSM</span>
+                    <span class="datos-lista-num dato-atsm" id="dc-lista-atsm">—</span>
+                    <span class="datos-lista-dot" id="dc-dot-atsm"></span>
+                </div>
+                <div class="datos-lista-item">
+                    <span class="datos-lista-var dato-ssm">SSM</span>
+                    <span class="datos-lista-num dato-ssm" id="dc-lista-ssm">—</span>
+                    <span class="datos-lista-dot" id="dc-dot-ssm"></span>
+                </div>
+                <div class="datos-lista-item">
+                    <span class="datos-lista-var dato-assm">ASSM</span>
+                    <span class="datos-lista-num dato-assm" id="dc-lista-assm">—</span>
+                    <span class="datos-lista-dot" id="dc-dot-assm"></span>
+                </div>
+            </div>
+            <!-- Boletines al costado -->
+            <div class="datos-boletines-col">
+
+                <a class="datos-boletin" id="linkBDO" href="https://siofen.imarpe.gob.pe/boletines-e-informes/BDO" target="_blank">
+                    <img src="Plots/portada_BDO.png" alt="BDO" class="datos-boletin-img"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="datos-boletin-img-placeholder" style="display:none;">📄</div>
+                    <span class="datos-boletin-texto">Accede al Boletín Diario Oceanográfico</span>
+                </a>
+
+                <a class="datos-boletin" id="linkBSTLP" href="https://siofen.imarpe.gob.pe/boletines-e-informes/BS-TLP" target="_blank">
+                    <img src="Plots/portada_BSTLP.png" alt="BS-TLP" class="datos-boletin-img"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="datos-boletin-img-placeholder" style="display:none;">📄</div>
+                    <span class="datos-boletin-texto">Accede al Boletín Semanal TLP</span>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Librerías -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
