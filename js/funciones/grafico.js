@@ -6,7 +6,7 @@
 const mainCharts = {};
 const rangeState = {};
 
-// Este es tu VAR_CONFIG base (solo asegúrate de que esté arriba)
+// Este es tu VAR_CONFIG base
 const VAR_CONFIG = {
     TSM:  { titulo: 'TEMPERATURA SUPERFICIAL DEL MAR (TSM)', unidad: 'TSM (°C)',  color: '#000000', yMin: undefined, yMax: undefined },
     ATSM: { titulo: 'ANOMALÍA DE LA TSM (ATSM)',             unidad: 'ATSM (°C)',  color: '#2980b9', yMin: undefined, yMax: undefined },
@@ -14,19 +14,17 @@ const VAR_CONFIG = {
     ASSM: { titulo: 'ANOMALÍA DE LA SSM (ASSM)',             unidad: 'ASSM', color: '#8e44ad', yMin: undefined, yMax: undefined }
 };
 
-// 👇 NUEVO: DICCIONARIO DE LÍMITES POR ESTACIÓN
+// DICCIONARIO DE LÍMITES POR ESTACIÓN
 const LIMITES_POR_ESTACION = {
     'CALLAO': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: undefined, atsmMax: undefined,
                 ssmMin: 33, ssmMax: 36, 
                 assmMin: -0.5, assmMax: 0.5 },
     
-    
     'CHIMBOTE': { tsmMin: undefined, tsmMax: undefined, 
                     atsmMin: undefined, atsmMax: undefined,
                     ssmMin: 33, ssmMax: 36, 
                     assmMin: undefined, assmMax:undefined },
-
 
     'TUMBES': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: -5, atsmMax: 5,
@@ -43,12 +41,10 @@ const LIMITES_POR_ESTACION = {
                 ssmMin:30, ssmMax:36, 
                 assmMin: -1, assmMax:1},
 
-
     'CHICAMA': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: -5, atsmMax: 10,
                 ssmMin:33, ssmMax:36, 
                 assmMin: -0.4, assmMax:0.4},
-
 
     'HUANCHACO': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: undefined, atsmMax: undefined,
@@ -60,27 +56,20 @@ const LIMITES_POR_ESTACION = {
                 ssmMin:33, ssmMax:36, 
                 assmMin: -1, assmMax: 1},
                 
-                
     'PISCO': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: undefined, atsmMax: undefined,
                 ssmMin:undefined, ssmMax:undefined, 
                 assmMin: -1, assmMax: 1},         
-                
                 
     'ILO': { tsmMin: undefined, tsmMax: undefined, 
                 atsmMin: undefined, atsmMax: undefined,
                 ssmMin:34, ssmMax:36, 
                 assmMin: undefined, assmMax: undefined},   
 
-    // Si más adelante quieres configurar Paita, solo agregas una línea así:
-    // 'PAITA':  { ssmMin: 34, ssmMax: 35.5, assmMin: -1, assmMax: 1 },
     'DEFAULT': { ssmMin: 25, ssmMax: 36, assmMin: undefined, assmMax: undefined }
 };
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-
-
-//Se agregara funcion para modificar los rangos las subventanas de TSM ATSM SSM ASSM
 
 // ─── FUNCIONES GLOBALES PARA EL PANEL LATERAL ─────────────────────
 window.aplicarRangoY = function(tab) {
@@ -189,12 +178,6 @@ window.aplicarRangoFechas = function(tab) {
     chart.update('none');
     sincronizarRangesliderDesdeChart(chart);
 };
-
-
-
-
-
-//Fin de la modificaion
 
 // Función segura para extraer la etiqueta sin importar si es índice o texto
 function obtenerLabelSeguro(labels, val) {
@@ -462,10 +445,9 @@ function instanciarMain(tab, data, paletaRGB, soloUna) {
     const { fechas, valores } = data[tab];
     
     const isSSM = tab === 'SSM';
-    const isASSM = tab === 'ASSM'; // Detectamos si es la gráfica de ASSM
+    const isASSM = tab === 'ASSM';
     const isAnomalia = (tab === 'ATSM' || tab === 'ASSM');
 
-    // Agrupamos SSM y ASSM para activar el movimiento vertical
     const isDesplazableY = (isSSM || isASSM);
 
     destruirChart(tab);
@@ -474,24 +456,21 @@ function instanciarMain(tab, data, paletaRGB, soloUna) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // LÓGICA DE LA "MANITO" DE ARRASTRE
     if (isDesplazableY) {
         canvas.style.cursor = 'grab';
         canvas.onmousedown  = () => canvas.style.cursor = 'grabbing';
         canvas.onmouseup    = () => canvas.style.cursor = 'grab';
         canvas.onmouseleave = () => canvas.style.cursor = 'grab';
     } else {
-        canvas.style.cursor = 'crosshair'; // Cursor normal de selección para las demás
+        canvas.style.cursor = 'crosshair';
     }
-
-
 
     const pluginFondo = {
         id: 'fondo_' + tab,
         beforeDraw(chart) {
             const { ctx: c, width, height } = chart;
             c.save();
-            c.fillStyle = '#ffffff'; // Fuerza el fondo blanco puro para todos los paneles
+            c.fillStyle = '#ffffff'; 
             c.fillRect(0, 0, width, height);
             c.restore();
         }
@@ -519,7 +498,7 @@ function instanciarMain(tab, data, paletaRGB, soloUna) {
                 categoryPercentage: isAnomalia ? 1.0 : undefined
             }]
         },
-options: {
+        options: {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
@@ -558,7 +537,6 @@ options: {
                         maxRotation: 0,
                         autoSkip: true,
                         maxTicksLimit: 12,
-                        // 👇 REEMPLAZA EL CALLBACK DENTRO DE scales -> x -> ticks POR ESTE:
                         callback: function(value, index, values) {
                             const label = this.getLabelForValue(value);
                             if (!label) return '';
@@ -570,9 +548,8 @@ options: {
                             const prevLabel = prevIdx !== null ? this.getLabelForValue(prevIdx) : null;
                             const prevAnio = prevLabel ? prevLabel.split('-')[0] : null;
 
-                            // Al retornar un arreglo [texto1, texto2], Chart.js lo dibuja en dos líneas
                             if (index === 0 || anio !== prevAnio) {
-                                return [`${dia} ${mesStr}`, anio]; // El año se dibuja debajo
+                                return [`${dia} ${mesStr}`, anio]; 
                             } else {
                                 return `${dia} ${mesStr}`;
                             }
@@ -626,6 +603,7 @@ options: {
     chartInst._tabKey  = tab;
     mainCharts[tab]    = chartInst;
 }
+
 function sincronizarRangesliderDesdeChart(chart) {
     const xScale = chart.scales.x;
     const labels = chart.data.labels;
@@ -760,7 +738,6 @@ function crearTarjetaHTML(tab, data, soloUna, estacionActual) {
 // ═══════════════════════════════════════════════════════════════
 export function dibujarGrafico(data, estacionActual, currentTab, paletaRGB) {
 
-    // 👇 ACTUALIZACIÓN DINÁMICA: Busca la estación o usa la configuración por defecto
     const lim = LIMITES_POR_ESTACION[estacionActual] || LIMITES_POR_ESTACION['DEFAULT'];
     VAR_CONFIG.TSM.yMin  = lim.tsmMin;
     VAR_CONFIG.TSM.yMax  = lim.tsmMax;
@@ -774,26 +751,11 @@ export function dibujarGrafico(data, estacionActual, currentTab, paletaRGB) {
     VAR_CONFIG.ASSM.yMin = lim.assmMin;
     VAR_CONFIG.ASSM.yMax = lim.assmMax;
 
-
     const scroll = document.getElementById('graficosScroll');
     if (!scroll) return;
 
     const tabs    = currentTab === 'TODOS' ? ['TSM','ATSM','SSM','ASSM'] : [currentTab];
     const soloUna = tabs.length === 1;
-
-    // Destruimos gráficos viejos y LIMPIAMOS la memoria del zoom para que no se atasque
-    ['TSM','ATSM','SSM','ASSM'].forEach(t => {
-        destruirChart(t);
-        rangeState[t] = { left: 0, right: 1 }; 
-    });
-
-   // scroll.innerHTML = tabs.map(t => crearTarjetaHTML(t, data, soloUna)).join(''); // LINEA ANTIGUA
-
-    //scroll.innerHTML = tabs.map(t => crearTarjetaHTML(t, data, soloUna, estacionActual)).join('');// Linea nueva con boton de descarga en subventana
-
-    // ═══════════════════════════════════════════════════════════════
-    // DENTRO DE LA FUNCIÓN dibujarGrafico
-    // ═══════════════════════════════════════════════════════════════
 
     // Destruimos gráficos viejos y limpiamos estados
     ['TSM','ATSM','SSM','ASSM'].forEach(t => {
@@ -801,32 +763,38 @@ export function dibujarGrafico(data, estacionActual, currentTab, paletaRGB) {
         rangeState[t] = { left: 0, right: 1 }; 
     });
 
-    // Generamos las tarjetas
-    let htmlContent = tabs.map(t => crearTarjetaHTML(t, data, soloUna, estacionActual)).join('');
-
-    // 👇 NUEVO: SI ESTAMOS EN "TODOS", AGREGAMOS EL BOTÓN DE RESET GLOBAL ARRIBA
-    if (!soloUna) {
-        const btnResetGlobal = `
-        <div style="display: flex; justify-content: flex-end; padding: 0 5px 10px 0;">
-            <button onclick="resetearZoom()" style="background: rgba(231, 76, 60, 0.1); color: #671108; border: 1px solid #e74c3c; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                🔍 RESTABLECER ZOOM EN TODAS LAS SERIES
-            </button>
-        </div>`;
-        htmlContent = btnResetGlobal + htmlContent;
-    }
-
-    scroll.innerHTML = htmlContent;
-
-    // ... (el código de los estilos scroll.style sigue igual debajo de esto)
-
+    // 1. Inyectamos los gráficos limpios
+    scroll.innerHTML = tabs.map(t => crearTarjetaHTML(t, data, soloUna, estacionActual)).join('');
 
     scroll.style.display       = 'flex';
     scroll.style.flexDirection = 'column';
     scroll.style.overflowY     = 'hidden'; 
     scroll.style.flex          = '1';
-    scroll.style.gap           = '8px'; // Ligera separación
+    scroll.style.gap           = '8px'; 
 
-    // Como las tarjetas ya tienen el tamaño final desde el HTML, instanciamos directamente sin errores
+    // 2. NUEVA LÓGICA: Inyectamos el botón en el contenedor padre
+    let btnGlobal = document.getElementById('btn-reset-global');
+    if (!btnGlobal) {
+        btnGlobal = document.createElement('button');
+        btnGlobal.id = 'btn-reset-global';
+        btnGlobal.innerHTML = '🔍 RESTABLECER ZOOM';
+        btnGlobal.onclick = window.resetearZoom; 
+        
+        // Con top: -38px obligamos al botón a subir hasta la zona de las pestañas
+        btnGlobal.style.cssText = 'position: absolute; top: -38px; right: 15px; z-index: 9999; background: white; color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 11px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: 0.3s;';
+        
+        scroll.parentElement.style.position = 'relative';
+        
+        // ⭐ LA LÍNEA MÁGICA: Apaga la "tijera" para que el botón pueda salir de la caja blanca
+        scroll.parentElement.style.overflow = 'visible'; 
+        
+        scroll.parentElement.appendChild(btnGlobal);
+    }
+    
+// Ocultar el botón si entra a una pestaña individual, mostrarlo en "TODOS"
+    btnGlobal.style.display = soloUna ? 'none' : 'block';
+
+    // Instanciamos gráficos
     requestAnimationFrame(() => {
         tabs.forEach(t => instanciarMain(t, data, paletaRGB, soloUna));
         requestAnimationFrame(() => {
@@ -848,7 +816,7 @@ export function dibujarGrafico(data, estacionActual, currentTab, paletaRGB) {
     act('meta-assm-val', data.ASSM?.valores);
 }
 
-// 👇 Agregamos window.resetearZoom para que el botón HTML la encuentre
+// Función global para que la encuentre el botón HTML
 window.resetearZoom = function() {
     ['TSM','ATSM','SSM','ASSM'].forEach(tab => {
         rangeState[tab] = { left: 0, right: 1 };
@@ -864,7 +832,7 @@ window.resetearZoom = function() {
     });
 };
 
-// Mantenemos el export por si app.js lo necesita
+// Export para app.js
 export function resetearZoom() {
     window.resetearZoom();
 }
