@@ -23,6 +23,7 @@ const estaciones = [
     { nombre: 'HUACHO',    lat: -11.12,    lon: -77.61,    colIndexTSM: 9,  colIndexSSM: 9  },
     { nombre: 'CALLAO',    lat: -12.06458, lon: -77.15577, colIndexTSM: 10, colIndexSSM: 10 },
     { nombre: 'PISCO',     lat: -13.71,    lon: -76.22,    colIndexTSM: 11, colIndexSSM: 11 },
+    { nombre: 'MATARANI',  lat: -17.016,   lon: -72.108,    colIndexTSM: 11, colIndexSSM: 11 },
     { nombre: 'ILO',       lat: -17.65,    lon: -71.35,    colIndexTSM: 12, colIndexSSM: 12 }
 ];
 
