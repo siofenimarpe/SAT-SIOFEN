@@ -25,7 +25,6 @@
             <button class="tab-btn"         id="tab-TSM"   onclick="cambiarPestana('TSM')">TSM</button>
             <button class="tab-btn"         id="tab-ATSM"  onclick="cambiarPestana('ATSM')">ATSM</button>
             <button class="tab-btn"         id="tab-SSM"   onclick="cambiarPestana('SSM')">SSM</button>
-            <!--<button class="tab-btn" disabled id="tab-ASSM">ASSM</button>-->
             <button class="tab-btn" id="tab-ASSM" onclick="cambiarPestana('ASSM')">ASSM</button>
         </div>
         <div style="position:relative; flex:1; overflow:hidden; display:flex; flex-direction:column;">
@@ -114,43 +113,40 @@
         </div>
 
         <!-- 4 tarjetas -->
-        <div class="datos-cards">
-            <div class="dato-card">
-                <div class="dato-card-label">TSM</div>
-                <div class="dato-card-desc">Temperatura Superficial del Mar</div>
-                <div style="display:flex; align-items:baseline; gap:4px;">
-                    <div class="dato-card-valor dato-tsm" id="dc-tsm-val">—</div>
-                    <div class="dato-card-unidad">°C</div>
-                </div>
-            </div>
-
-            <div class="dato-card">
-                <div class="dato-card-label">ATSM</div>
-                <div class="dato-card-desc">Anomalía de la TSM</div>
-                <div style="display:flex; align-items:baseline; gap:4px;">
-                    <div class="dato-card-valor dato-atsm" id="dc-atsm-val">—</div>
-                    <div class="dato-card-unidad">°C</div>
-                </div>
-            </div>
-
-            <div class="dato-card">
-                <div class="dato-card-label">SSM</div>
-                <div class="dato-card-desc">Salinidad Superficial del Mar</div>
-                <div style="display:flex; align-items:baseline; gap:4px;">
-                    <div class="dato-card-valor dato-ssm" id="dc-ssm-val">—</div>
-                    <div class="dato-card-unidad">ups</div>
-                </div>
-            </div>
-
-            <div class="dato-card">
-                <div class="dato-card-label">ASSM</div>
-                <div class="dato-card-desc">Anomalía de la SSM</div>
-                <div style="display:flex; align-items:baseline; gap:4px;">
-                    <div class="dato-card-valor dato-assm" id="dc-assm-val">—</div>
-                    <div class="dato-card-unidad">ups</div>
-                </div>
-            </div>
+<div class="datos-cards">
+    <div class="dato-card">
+        <div class="dato-card-label">TSM</div>
+        <div class="dato-card-desc">Temperatura Superficial del Mar</div>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+            <div class="dato-card-valor dato-tsm" id="dc-tsm-val">—</div>
+            <div class="dato-card-unidad">°C</div>
         </div>
+    </div>
+    <div class="dato-card">
+        <div class="dato-card-label">ATSM</div>
+        <div class="dato-card-desc">Anomalía de la TSM</div>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+            <div class="dato-card-valor dato-atsm" id="dc-atsm-val">—</div>
+            <div class="dato-card-unidad">°C</div>
+        </div>
+    </div>
+    <div class="dato-card">
+        <div class="dato-card-label">SSM</div>
+        <div class="dato-card-desc">Salinidad Superficial del Mar</div>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+            <div class="dato-card-valor dato-ssm" id="dc-ssm-val">—</div>
+            <div class="dato-card-unidad"></div>
+        </div>
+    </div>
+    <div class="dato-card">
+        <div class="dato-card-label">ASSM</div>
+        <div class="dato-card-desc">Anomalía de la SSM</div>
+        <div style="display:flex;align-items:baseline;gap:3px;">
+            <div class="dato-card-valor dato-assm" id="dc-assm-val">—</div>
+            <div class="dato-card-unidad"></div>
+        </div>
+    </div>
+</div>
 
         <!-- Calendario + lista -->
         <div class="datos-body">
@@ -193,14 +189,18 @@
                     <img src="Plots/portada_BDO.png" alt="BDO" class="datos-boletin-img"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div class="datos-boletin-img-placeholder" style="display:none;">📄</div>
-                    <span class="datos-boletin-texto">Accede al Boletín Diario Oceanográfico</span>
+                    <div class="datos-boletin-info">
+                        <span class="datos-boletin-texto">Accede al Boletín Diario Oceanográfico</span>
+                    </div>
                 </a>
 
                 <a class="datos-boletin" id="linkBSTLP" href="https://siofen.imarpe.gob.pe/boletines-e-informes/BS-TLP" target="_blank">
                     <img src="Plots/portada_BSTLP.png" alt="BS-TLP" class="datos-boletin-img"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div class="datos-boletin-img-placeholder" style="display:none;">📄</div>
-                    <span class="datos-boletin-texto">Accede al Boletín Semanal TLP</span>
+                    <div class="datos-boletin-info">
+                        <span class="datos-boletin-texto">Accede al Boletín Semanal TLP</span>
+                    </div>
                 </a>
 
             </div>
