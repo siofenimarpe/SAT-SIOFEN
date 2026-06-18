@@ -5,7 +5,7 @@
 // URL del repositorio GitHub (TSM + ATSM)
 //const GITHUB_TSM_URL = 'https://raw.githubusercontent.com/victorfalla/BASE_DE_DATOS/main/Muelles_TSM_ATSM_base_datos.xlsx';
 
-const PATH_EXCEL_TEMPERATURA = 'data/Muelles_TSM_ATSM_base_datos.xlsx'; 
+const PATH_EXCEL_TEMPERATURA = 'data/LAB_TSM_ATSM_base_datos_diario.xlsx'; 
 const PATH_EXCEL_SALINIDAD   = 'data/LAB_SSM_ASSM_base_datos_diario.xlsx'; // Cambia esto cuando tengas el archivo real de salinidad
 
 export async function cargarPaleta(opacidad) {

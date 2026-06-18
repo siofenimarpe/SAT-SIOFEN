@@ -450,7 +450,6 @@ function crearTarjetaHTML(tab, data, soloUna, estacionActual) {
     }
     const fechaFormateada = ultFecha ? ultFecha.split('-').reverse().join('-') : '';
 
-    // Valor inicial con formato anomalía si corresponde
     let valorHTML = '—';
     if (ultVal !== null) {
         if (isAnomalia) {
@@ -517,7 +516,7 @@ function crearTarjetaHTML(tab, data, soloUna, estacionActual) {
                     <canvas id="main_${tab}"></canvas>
                     ${botonesZoomHTML(tab)}
                 </div>
-                <div class="rangeslider-wrap" id="rs_${tab}"></div>
+                ${soloUna ? `<div class="rangeslider-wrap" id="rs_${tab}"></div>` : ''}
                 ${dateControlsHTML}
             </div>
         </div>
